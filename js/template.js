@@ -34,7 +34,8 @@
 		=	'<li data-id="{{id}}" class="{{completed}}">'
 		+		'<div class="view">'
 		+			'<input class="toggle" type="checkbox" {{checked}}>'
-		+			'<label>{{title}}</label>'
+		+			'<label class="mytitle">{{title}}</label>'
+		+			'<label class="viewdate">{{datetime}}</label>'
 		+			'<button class="destroy"></button>'
 		+		'</div>'
 		+	'</li>';
@@ -75,6 +76,8 @@
 			template = template.replace('{{title}}', escape(data[i].title));
 			template = template.replace('{{completed}}', completed);
 			template = template.replace('{{checked}}', checked);
+
+			template = template.replace('{{datetime}}', escape(data[i].datetime));
 
 			view = view + template;
 		}

@@ -66,12 +66,15 @@
 			return;
 		}
 
-		listItem.className = listItem.className + ' editing';
+		listItem.className = listItem.className + 'editing';
 
 		var input = document.createElement('input');
 		input.className = 'edit';
-
-		listItem.appendChild(input);
+		
+		var listItemLabel = listItem.getElementsByClassName('mytitle')[0];
+		//alert(listItemLabel.innerHTML);
+		listItemLabel.appendChild(input);
+		//listItem.appendChild(input);
 		input.focus();
 		input.value = title;
 	};
@@ -84,14 +87,62 @@
 		}
 
 		var input = qs('input.edit', listItem);
-		listItem.removeChild(input);
+		var listItemLabel = listItem.getElementsByClassName('mytitle')[0];
+		listItemLabel.removeChild(input);
 
 		listItem.className = listItem.className.replace('editing', '');
-
-		qsa('label', listItem).forEach(function (label) {
+		
+		qsa('label.mytitle', listItem).forEach(function (label) {
 			label.textContent = title;
 		});
 	};
+
+	/*Add Date edit and done*/
+		View.prototype._editDateView = function (id, date) {
+		var listItem = qs('[data-id="' + id + '"]');
+		$(function () {
+                $('#datetimepicker4').datetimepicker();
+            });
+		if (!listItem) {
+			return;
+		}
+
+		listItem.className = listItem.className + 'editing';
+
+		var input = document.createElement('input');
+		input.className = 'edit';
+
+		var listItemLabel = listItem.getElementsByClassName('viewdate')[0];
+		listItemLabel.appendChild(input);
+
+		input.focus();
+		input.value = date;
+		this._datetimepickerRun();
+	};
+
+	View.prototype._editDateDoneView = function (id, date) {
+		var listItem = qs('[data-id="' + id + '"]');
+
+		if (!listItem) {
+			return;
+		}
+
+		var input = qs('input.edit', listItem);
+		var listItemLabel = listItem.getElementsByClassName('viewdate')[0];
+		listItemLabel.removeChild(input);
+
+		listItem.className = listItem.className.replace('editing', '');
+		
+		qsa('label.viewdate', listItem).forEach(function (label) {
+			label.textContent = date;
+		});
+	};
+	/*Add Date edit and done*/
+
+	View.prototype._datetimepickerRun = function () {
+		$('.new-todo-datetime').datetimepicker();
+	}
+	/*Add datetimepicker*/
 
 	View.prototype.render = function (viewCmd, parameter) {
 		var self = this;
@@ -119,6 +170,7 @@
 			},
 			clearNewTodo: function () {
 				self.$newTodo.value = '';
+				self.$newTodoDate.value = '';
 			},
 			elementComplete: function () {
 				self._elementComplete(parameter.id, parameter.completed);
@@ -128,7 +180,19 @@
 			},
 			editItemDone: function () {
 				self._editItemDone(parameter.id, parameter.title);
+			},
+			/*DATE*/
+			editDateView: function () {
+				self._editDateView(parameter.id, parameter.datetime);
+			},
+			editDateDoneView: function () {
+				self._editDateDoneView(parameter.id, parameter.datetime);
+			},
+			datetimepickerRun: function () {
+				self._datetimepickerRun();
 			}
+			/*DATE*/
+
 		};
 
 		viewCommands[viewCmd]();
@@ -141,27 +205,53 @@
 
 	View.prototype._bindItemEditDone = function (handler) {
 		var self = this;
-		$delegate(self.$todoList, 'li .edit', 'blur', function () {
+		$delegate(self.$todoList, 'li label.mytitle .edit', 'blur', function () {
 			if (!this.dataset.iscanceled) {
+				
 				handler({
 					id: self._itemId(this),
-					title: this.value
+					title: this.value,
 				});
 			}
 		});
 
-		$delegate(self.$todoList, 'li .edit', 'keypress', function (event) {
+		$delegate(self.$todoList, 'li label.mytitle .edit', 'keypress', function (event) {
 			if (event.keyCode === self.ENTER_KEY) {
+				alert('li .edit');
 				// Remove the cursor from the input when you hit enter just like if it
 				// were a real form
+
 				this.blur();
 			}
 		});
 	};
 
+	View.prototype._bindEditDateDoneView = function (handler) {
+		var self = this;
+		$delegate(self.$todoList, 'li label.viewdate .edit', 'blur', function () {
+			if (!this.dataset.iscanceled) {
+				
+				handler({
+					id: self._itemId(this),
+					datetime: this.value,
+				});
+			}
+		});
+		
+		$delegate(self.$todoList, 'li label.viewdate .edit', 'keypress', function (event) {
+			if (event.keyCode === self.ENTER_KEY) {
+				
+				// Remove the cursor from the input when you hit enter just like if it
+				// were a real form
+
+				this.blur();
+			}
+		});
+	}
+
 	View.prototype._bindItemEditCancel = function (handler) {
 		var self = this;
-		$delegate(self.$todoList, 'li .edit', 'keyup', function (event) {
+		$delegate(self.$todoList, 'li label.mytitle .edit', 'keyup', function (event) {
 			if (event.keyCode === self.ESCAPE_KEY) {
 				this.dataset.iscanceled = true;
 				this.blur();
@@ -179,7 +269,6 @@
 					title:self.$newTodo.value,
 					datetime:self.$newTodoDate.value
 				});
-				alert(handler);
 			});
 
 		} else if (event === 'removeCompleted') {
@@ -193,7 +282,7 @@
 			});
 
 		} else if (event === 'itemEdit') {
-			$delegate(self.$todoList, 'li label', 'dblclick', function () {
+			$delegate(self.$todoList, 'li label.mytitle', 'dblclick', function () {
 				handler({id: self._itemId(this)});
 			});
 
@@ -216,6 +305,21 @@
 		} else if (event === 'itemEditCancel') {
 			self._bindItemEditCancel(handler);
 		}
+		/*DATE*/
+		 else if (event === 'editDateView') {
+			$delegate(self.$todoList, 'li label.viewdate', 'dblclick', function () {
+				handler({id: self._itemId(this)});
+			});
+
+		} else if (event === 'editDateDoneView') {
+			self._bindEditDateDoneView(handler);
+
+		} else if (event === 'datetimepickerRun') {
+			$on(self.$newTodoDate, 'click', self._datetimepickerRun());
+		}
+
+
+		/*DATE*/
 	};
 
 	// Export to window

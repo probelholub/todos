@@ -20,9 +20,9 @@
 	Model.prototype.create = function (titleAll, callback) {
 		titleAll = titleAll || '';
 		callback = callback || function () {};
-		alert(titleAll);
 		var newItem = {
-			title: titleAll.title.trim() + titleAll.datetime.trim(),
+			title: titleAll.title.trim(),
+			datetime: titleAll.datetime.trim(),
 			completed: false
 		};
 

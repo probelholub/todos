@@ -44,6 +44,28 @@
 		self.view.bind('toggleAll', function (status) {
 			self.toggleAll(status.completed);
 		});
+		/*add EditDate*/
+		self.view.bind('editDateView', function (item) {
+			self.editDateView(item.id);
+		});
+
+		self.view.bind('editDateDoneView', function (item) {
+			self.editDateDoneView(item.id, item.datetime);
+		});
+		/*add EditDate*/
+		self.view.bind('datetimepickerRun', function (item) {
+			self.timePickerRun(item.id);
+		});
+	}
+
+
+
+	Controller.prototype.timePickerRun = function (id) {
+		var self = this;
+		
+		self.model.read(id, function (data) {
+			self.view.render('datetimepickerRun', {id: id, title: data[0].title});
+		});	
 	}
 
 	/**
@@ -92,14 +114,14 @@
 	 * An event to fire whenever you want to add an item. Simply pass in the event
 	 * object and it'll handle the DOM insertion and saving of the new item.
 	 */
-	Controller.prototype.addItem = function (title) {
+	Controller.prototype.addItem = function (titleAll) {
 		var self = this;
 
-		/*if (title.trim() === '') {
+		if(titleAll.title.trim() === '') {
 			return;
-		}*/
+		}
 
-		self.model.create(title, function () {
+		self.model.create(titleAll, function () {
 			self.view.render('clearNewTodo');
 			self._filter(true);
 		});
@@ -113,6 +135,7 @@
 		self.model.read(id, function (data) {
 			self.view.render('editItem', {id: id, title: data[0].title});
 		});
+
 	};
 
 	/*
@@ -130,6 +153,33 @@
 			self.removeItem(id);
 		}
 	};
+
+	/*
+	 * Triggers the item editing mode. DATE
+	 */
+	Controller.prototype.editDateView = function (id) {
+		var self = this;
+
+		self.model.read(id, function (data) {
+			self.view.render('editDateView', {id: id, title: data[0].title, datetime: data[0].datetime});
+		});
+	};
+
+	/*
+	 * Finishes the item editing mode successfully. DATE
+	 */
+	Controller.prototype.editDateDoneView = function (id, datetime) {
+		var self = this;
+		datetime = datetime.trim();
+		if (datetime.length !== 0) {
+			self.model.update(id, {datetime: datetime}, function () {
+				self.view.render('editDateDoneView', {id: id, datetime: datetime});
+			});
+		} else {
+			self.removeItem(id);
+		}
+	};
+
 
 	/*
 	 * Cancels the item editing mode.
