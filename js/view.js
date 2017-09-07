@@ -26,6 +26,7 @@
 		this.$toggleAll = qs('.toggle-all');
 		this.$newTodo = qs('.new-todo');
 		this.$newTodoDate = qs('.new-todo-datetime');
+		this.$sortName = qs('.sort-name');
 	}
 
 	View.prototype._removeItem = function (id) {
@@ -226,6 +227,7 @@
 		});
 	};
 
+	/*Edit date*/
 	View.prototype._bindEditDateDoneView = function (handler) {
 		var self = this;
 		$delegate(self.$todoList, 'li label.viewdate .edit', 'blur', function () {
@@ -260,16 +262,20 @@
 			}
 		});
 	};
+	/*Edit date*/
 
 	View.prototype.bind = function (event, handler) {
 		var self = this;
 		if (event === 'newTodo') {
-			$on(self.$newTodo, 'change', function () {
+			$on(self.$newTodo, 'keypress', function (event) {
+			if (event.keyCode === self.ENTER_KEY) {
 				handler({
 					title:self.$newTodo.value,
 					datetime:self.$newTodoDate.value
 				});
-			});
+				this.blur();
+			}
+		});
 
 		} else if (event === 'removeCompleted') {
 			$on(self.$clearCompleted, 'click', function () {
@@ -317,9 +323,15 @@
 		} else if (event === 'datetimepickerRun') {
 			$on(self.$newTodoDate, 'click', self._datetimepickerRun());
 		}
-
-
 		/*DATE*/
+		/*Sort*/
+		else if (event === 'sortByName') {
+			$on(self.$sortName, 'click', function () {
+				handler();
+			});
+		}
+		/*Sort*/
+
 	};
 
 	// Export to window

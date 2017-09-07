@@ -52,13 +52,57 @@
 		self.view.bind('editDateDoneView', function (item) {
 			self.editDateDoneView(item.id, item.datetime);
 		});
-		/*add EditDate*/
+		
 		self.view.bind('datetimepickerRun', function (item) {
 			self.timePickerRun(item.id);
 		});
+		/*add EditDate*/
+		/*Sort*/
+		self.view.bind('sortByName', function (item) {
+			self.sortBy();
+		});
+		/*Sort*/
+	}	
+
+	Controller.prototype.sortBy = function () {
+		var self = this;
+
+		self.model.read(function (data) {
+			var changeData = [];
+
+			for (var i = 0; i < data.length; i++) {
+				var newItemData = {
+					title: data[i].title.trim(),
+					datetime: data[i].datetime.trim(),
+					completed: data[i].completed
+				};
+				changeData.push(newItemData);
+			}
+	
+			data.forEach(function (item) {
+				self.removeItem(item.id);
+			});
+
+			for (var i = 0; i < changeData.length; i++) {
+				//alert(changeData[i].title+'_'+changeData[i].datetime+'_'+changeData[i].completed+'_'+changeData[i].id);
+				console.log(changeData[i].id);
+			}
+
+			changeData.sort(function (nameOne, nameTwo) {
+				if (nameOne.title > nameTwo.title) {
+				   return 1;
+				}
+				if (nameOne.title < nameTwo.title) {
+				  return -1;
+				}
+  			return 0;
+			});
+			
+			changeData.forEach(function(item) {
+				self.addItem(item);
+			})
+		});
 	}
-
-
 
 	Controller.prototype.timePickerRun = function (id) {
 		var self = this;

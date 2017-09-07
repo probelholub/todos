@@ -5,6 +5,7 @@
 		<title>VanillaJS • TodoMVC</title>
 		<link rel="stylesheet" href="node_modules/todomvc-common/basecss.css">
 		<link rel="stylesheet" href="node_modules/todomvc-app-css/indexcss.css">
+		<link rel="stylesheet" href="node_modules/todomvc-app-css/changetodos.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
@@ -23,6 +24,10 @@
 			<section class="main">
 				<input class="toggle-all" type="checkbox">
 				<label for="toggle-all">Mark all as complete</label>
+				<input class="sort-name" type="checkbox">
+				<label for="sort-name">Sort all by name</label>
+				<input class="sort-date" type="checkbox">
+				<label for="sort-date">Sort all by date</label>
 				<ul class="todo-list"></ul>
 			</section>
 			<footer class="footer">
@@ -47,18 +52,6 @@
 			<p>Refactored by <a href="https://github.com/cburgmer">Christoph Burgmer</a></p>
 			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
 		</footer>
-<!-- <div class="container">
-    <div class="row">
-        <div class='col-sm-6'>
-            <input type='text' class="form-control" id='datetimepicker4' />
-        </div>
-        <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker4').datetimepicker();
-            });
-        </script>
-    </div>
-</div> -->
 
 		<script src="node_modules/todomvc-common/base.js"></script>
 		<script src="js/helpers.js"></script>
