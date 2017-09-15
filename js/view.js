@@ -27,6 +27,7 @@
 		this.$newTodo = qs('.new-todo');
 		this.$newTodoDate = qs('.new-todo-datetime');
 		this.$sortName = qs('.sort-name');
+		this.$sortDate = qs('.sort-date');
 	}
 
 	View.prototype._removeItem = function (id) {
@@ -327,6 +328,11 @@
 		/*Sort*/
 		else if (event === 'sortByName') {
 			$on(self.$sortName, 'click', function () {
+				handler();
+			});
+		}
+		else if (event === 'sortByDate') {
+			$on(self.$sortDate, 'click', function () {
 				handler();
 			});
 		}
