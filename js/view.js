@@ -267,6 +267,8 @@
 
 	View.prototype.bind = function (event, handler) {
 		var self = this;
+		var flagName = true;
+		var flagDate = true;
 		if (event === 'newTodo') {
 			$on(self.$newTodo, 'keypress', function (event) {
 			if (event.keyCode === self.ENTER_KEY) {
@@ -328,12 +330,20 @@
 		/*Sort*/
 		else if (event === 'sortByName') {
 			$on(self.$sortName, 'click', function () {
-				handler();
+				handler({
+					name: 'title',
+					flag: flagName
+				});
+				flagName = !flagName;
 			});
 		}
 		else if (event === 'sortByDate') {
 			$on(self.$sortDate, 'click', function () {
-				handler();
+				handler({
+					name: 'datetime',
+					flag: flagDate
+				});
+				flagDate = !flagDate;
 			});
 		}
 		/*Sort*/

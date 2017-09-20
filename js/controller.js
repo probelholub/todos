@@ -58,16 +58,17 @@
 		});
 		/*add EditDate*/
 		/*Sort*/
-		self.view.bind('sortByName', function (item) {
-			self.sortBy('title', true);
+		self.view.bind('sortByName', function (par) {
+			self.sortBy(par);
 		});
-		self.view.bind('sortByDate', function (item) {
-			self.sortBy('datetime', false);
+		
+		self.view.bind('sortByDate', function (par) {
+			self.sortBy(par);
 		});
 		/*Sort*/
 	}	
 
-	Controller.prototype.sortBy = function (name, flag) {
+	Controller.prototype.sortBy = function (par) {
 		var self = this;
 
 		self.model.read(function (data) {
@@ -77,33 +78,29 @@
 			data.forEach(function (item) {
 				self.removeItem(item.id);
 			});
-			/*for (var i = 0; i < changeData.length; i++) {
-				//alert(changeData[i].title+'_'+changeData[i].datetime+'_'+changeData[i].completed+'_'+changeData[i].id);
-				console.log(changeData[i].id);
-			}*/
 
-			if (name === 'title') {
+			if (par.flag) {
 				changeData.sort(function (nameOne, nameTwo) {
-					if (nameOne.title > nameTwo.title) {
+					if (nameOne[par.name] > nameTwo[par.name]) {
 					   return 1;
 					}
-					if (nameOne.title < nameTwo.title) {
+					if (nameOne[par.name] < nameTwo[par.name]) {
 					  return -1;
 					}
 	  			return 0;
 				}); 
-			} else if (name === 'datetime') {
+			} else {
 				changeData.sort(function (nameOne, nameTwo) {
-					if (nameOne.datetime > nameTwo.datetime) {
+					if (nameOne[par.name] < nameTwo[par.name]) {
 					   return 1;
 					}
-					if (nameOne.datetime < nameTwo.datetime) {
+					if (nameOne[par.name] > nameTwo[par.name]) {
 					  return -1;
 					}
 	  			return 0;
-				});
+				}); 
 			}
-			
+	
 			changeData.forEach(function(item, currentIndex) {
 			    setTimeout(function() {
 			        self.addItem(item);
